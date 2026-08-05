@@ -35,6 +35,13 @@ def test_search(q: str = "capital of France"):
     """Temporary endpoint to confirm the web search tool works via the API."""
     return {"results": web_search_tool(q)}
 
+from app.tools.wikipedia_tool import wikipedia_search
+
+@app.get("/test-wikipedia")
+def test_wikipedia(q: str = "Marie Curie"):
+    """Temporary endpoint to confirm the Wikipedia tool works via the API."""
+    return {"result": wikipedia_search(q)}
+
 
 @app.get("/")
 def root():
