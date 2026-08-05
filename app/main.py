@@ -28,6 +28,13 @@ def test_llm():
     ])
     return {"reply": reply}
 
+from app.tools.web_search import web_search as web_search_tool
+
+@app.get("/test-search")
+def test_search(q: str = "capital of France"):
+    """Temporary endpoint to confirm the web search tool works via the API."""
+    return {"results": web_search_tool(q)}
+
 
 @app.get("/")
 def root():
