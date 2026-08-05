@@ -18,6 +18,15 @@ def health_check():
         "env": settings.app_env,
         "model": settings.llm_model,
     }
+from app.llm_client import llm_client
+
+@app.get("/test-llm")
+def test_llm():
+    """Temporary endpoint to confirm the Groq connection works. Will be removed later."""
+    reply = llm_client.chat([
+        {"role": "user", "content": "Say 'Hello from ResearchAgent!' and nothing else."}
+    ])
+    return {"reply": reply}
 
 
 @app.get("/")
