@@ -42,6 +42,13 @@ def test_wikipedia(q: str = "Marie Curie"):
     """Temporary endpoint to confirm the Wikipedia tool works via the API."""
     return {"result": wikipedia_search(q)}
 
+from app.tools.arxiv_tool import arxiv_search
+
+@app.get("/test-arxiv")
+def test_arxiv(q: str = "retrieval augmented generation"):
+    """Temporary endpoint to confirm the arXiv tool works via the API."""
+    return {"result": arxiv_search(q)}
+
 
 @app.get("/")
 def root():
