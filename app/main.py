@@ -49,6 +49,13 @@ def test_arxiv(q: str = "retrieval augmented generation"):
     """Temporary endpoint to confirm the arXiv tool works via the API."""
     return {"result": arxiv_search(q)}
 
+from app.tools.calculator import calculate
+
+@app.get("/test-calculator")
+def test_calculator(expr: str = "(45 * 12) / 3 + 7"):
+    """Temporary endpoint to confirm the calculator tool works via the API."""
+    return {"result": calculate(expr)}
+
 
 @app.get("/")
 def root():
