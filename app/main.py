@@ -1,6 +1,8 @@
 """FastAPI entrypoint for ResearchAgent."""
 from fastapi import FastAPI
+from pydantic import BaseModel
 from app.config import settings
+from app.agent import run_agent
 
 app = FastAPI(
     title="ResearchAgent API",
@@ -18,43 +20,17 @@ def health_check():
         "env": settings.app_env,
         "model": settings.llm_model,
     }
-from app.llm_client import llm_client
 
-@app.get("/test-llm")
-def test_llm():
-    """Temporary endpoint to confirm the Groq connection works. Will be removed later."""
-    reply = llm_client.chat([
-        {"role": "user", "content": "Say 'Hello from ResearchAgent!' and nothing else."}
-    ])
-    return {"reply": reply}
 
-from app.tools.web_search import web_search as web_search_tool
+class ResearchRequest(BaseModel):
+    question: str
 
-@app.get("/test-search")
-def test_search(q: str = "capital of France"):
-    """Temporary endpoint to confirm the web search tool works via the API."""
-    return {"results": web_search_tool(q)}
 
-from app.tools.wikipedia_tool import wikipedia_search
-
-@app.get("/test-wikipedia")
-def test_wikipedia(q: str = "Marie Curie"):
-    """Temporary endpoint to confirm the Wikipedia tool works via the API."""
-    return {"result": wikipedia_search(q)}
-
-from app.tools.arxiv_tool import arxiv_search
-
-@app.get("/test-arxiv")
-def test_arxiv(q: str = "retrieval augmented generation"):
-    """Temporary endpoint to confirm the arXiv tool works via the API."""
-    return {"result": arxiv_search(q)}
-
-from app.tools.calculator import calculate
-
-@app.get("/test-calculator")
-def test_calculator(expr: str = "(45 * 12) / 3 + 7"):
-    """Temporary endpoint to confirm the calculator tool works via the API."""
-    return {"result": calculate(expr)}
+@app.post("/research")
+def research(request: ResearchRequest):
+    """The main endpoint: ask the agent a question, get a reasoned answer
+    with a trace of every tool it used along the way."""
+    return run_agent(request.question)
 
 
 @app.get("/")
